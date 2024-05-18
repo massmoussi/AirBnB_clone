@@ -4,7 +4,6 @@ Console module for the HBNB command interpreter.
 """
 
 import cmd
-import sys
 
 
 class HBNBCommand(cmd.Cmd):
@@ -34,22 +33,5 @@ class HBNBCommand(cmd.Cmd):
         print("Exit the program on EOF")
 
 
-def run_interactive():
-    """Run the command interpreter in interactive mode."""
-    HBNBCommand().cmdloop()
-
-
-def run_non_interactive():
-    """Run the command interpreter in non-interactive mode."""
-    for line in sys.stdin:
-        cmd = line.strip()
-        if cmd:
-            print("(hbnb)")
-            HBNBCommand().onecmd(cmd)
-
-
 if __name__ == '__main__':
-    if sys.stdin.isatty():
-        run_interactive()
-    else:
-        run_non_interactive()
+    HBNBCommand().cmdloop()
