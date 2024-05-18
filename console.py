@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
 import cmd
-prompt = '(hbnb)'
 
 
 class HBNBCommand(cmd.Cmd):
+
+    prompt = '(hbnb)'
 
     def do_quit(self, line):
         return True
