@@ -2,10 +2,13 @@
 
 import cmd
 
-
 class HBNBCommand(cmd.Cmd):
 
     prompt = '(hbnb) '
+
+    def preloop(self):
+        """Print a blank line before the command loop starts"""
+        print()
 
     def do_quit(self, line):
         """Quit command to exit the program"""
@@ -28,6 +31,11 @@ class HBNBCommand(cmd.Cmd):
     def postloop(self):
         """Ensure a newline after command loop ends"""
         print()
+
+    def precmd(self, line):
+        """Print a blank line before each command"""
+        print()
+        return line
 
 
 if __name__ == '__main__':
