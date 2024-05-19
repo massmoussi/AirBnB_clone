@@ -9,6 +9,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
@@ -31,7 +32,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Creates a new instance of BaseModel, saves it, and prints the id"""
+        """Creates a new  id"""
         if not arg:
             print("** class name missing **")
             return
@@ -43,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
         print(new_instance.id)
 
     def do_show(self, arg):
-        """Prints the string representation of an instance based on the class name and id"""
+
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -62,7 +63,6 @@ class HBNBCommand(cmd.Cmd):
         print(instance)
 
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id"""
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -81,17 +81,19 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on the class name"""
         if arg and arg not in globals():
             print("** class doesn't exist **")
             return
         instances = storage.all()
         if arg:
-            instances = {k: v for k, v in instances.items() if k.startswith(arg)}
+            instances = {
+                k: v
+                for k, v in instances.items()
+                if k.startswith(arg)
+            }
         print([str(instance) for instance in instances.values()])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or updating attribute"""
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -115,6 +117,7 @@ class HBNBCommand(cmd.Cmd):
             return
         setattr(instance, args[2], eval(args[3]))
         instance.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
