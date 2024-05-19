@@ -7,6 +7,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -30,43 +31,42 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        if arg not in globals():
+        try:
+            new_instance = eval(arg)()
+            new_instance.save()
+            print(new_instance.id)
+        except NameError:
             print("** class doesn't exist **")
-            return
-        new_instance = globals()[arg]()
-        new_instance.save()
-        print(new_instance.id)
 
     def do_show(self, arg):
         args = arg.split()
         if not args:
             print("** class name missing **")
             return
-        if args[0] not in globals():
+        if args[0] not in storage.classes():
             print("** class doesn't exist **")
             return
         if len(args) == 1:
             print("** instance id missing **")
             return
-        key = f"{args[0]}.{args[1]}"
-        instance = storage.all().get(key)
-        if instance is None:
+        key = "{}.{}".format(args[0], args[1])
+        if key not in storage.all():
             print("** no instance found **")
             return
-        print(instance)
+        print(storage.all()[key])
 
     def do_destroy(self, arg):
         args = arg.split()
         if not args:
             print("** class name missing **")
             return
-        if args[0] not in globals():
+        if args[0] not in storage.classes():
             print("** class doesn't exist **")
             return
         if len(args) == 1:
             print("** instance id missing **")
             return
-        key = f"{args[0]}.{args[1]}"
+        key = "{}.{}".format(args[0], args[1])
         if key not in storage.all():
             print("** no instance found **")
             return
@@ -74,32 +74,25 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, arg):
-        if arg and arg not in globals():
+        if arg not in storage.classes():
             print("** class doesn't exist **")
             return
-        instances = storage.all()
-        if arg:
-            instances = {
-             k: v
-             for k, v in instances.items()
-             if k.startswith(arg)
-             }
-        print([str(instance) for instance in instances.values()])
+    print([str(obj) for obj in storage.all().values()
+          if type(obj).__name__ == arg])
 
     def do_update(self, arg):
         args = arg.split()
         if not args:
             print("** class name missing **")
             return
-        if args[0] not in globals():
+        if args[0] not in storage.classes():
             print("** class doesn't exist **")
             return
         if len(args) == 1:
             print("** instance id missing **")
             return
-        key = f"{args[0]}.{args[1]}"
-        instance = storage.all().get(key)
-        if instance is None:
+        key = "{}.{}".format(args[0], args[1])
+        if key not in storage.all():
             print("** no instance found **")
             return
         if len(args) == 2:
@@ -108,8 +101,15 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 3:
             print("** value missing **")
             return
-        setattr(instance, args[2], eval(args[3]))
-        instance.save()
+        setattr(storage.all()[key], args[2], args[3])
+        storage.all()[key].save()
+
+    def do_count(self, arg):
+        if arg not in storage.classes():
+            print("** class doesn't exist **")
+            return
+        print([str(obj) for obj in storage.all().values()
+              if type(obj).__name__ == arg])
 
     def postcmd(self, stop, line):
         print()  # Print an empty line after each command
