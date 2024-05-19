@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+
 
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
@@ -21,12 +26,7 @@ class HBNBCommand(cmd.Cmd):
     def help_EOF(self):
         print("EOF command to exit the program")
 
-    def emptyline(self):
-        """Do nothing on empty input line"""
-        pass
-
     def do_create(self, arg):
-        """Creates a new instance of BaseModel, saves it, and prints the id"""
         if not arg:
             print("** class name missing **")
             return
@@ -38,7 +38,6 @@ class HBNBCommand(cmd.Cmd):
         print(new_instance.id)
 
     def do_show(self, arg):
-        """Prints the string representation of an instance based on the class name and id"""
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -57,7 +56,6 @@ class HBNBCommand(cmd.Cmd):
         print(instance)
 
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id"""
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -76,17 +74,19 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on the class name"""
         if arg and arg not in globals():
             print("** class doesn't exist **")
             return
         instances = storage.all()
         if arg:
-            instances = {k: v for k, v in instances.items() if k.startswith(arg)}
+            instances = {
+             k: v
+             for k, v in instances.items()
+             if k.startswith(arg)
+             }
         print([str(instance) for instance in instances.values()])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or updating attribute"""
         args = arg.split()
         if not args:
             print("** class name missing **")
@@ -110,6 +110,11 @@ class HBNBCommand(cmd.Cmd):
             return
         setattr(instance, args[2], eval(args[3]))
         instance.save()
+
+    def postcmd(self, stop, line):
+        print()  # Print an empty line after each command
+        return stop
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
