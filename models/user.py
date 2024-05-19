@@ -1,15 +1,18 @@
 #!/usr/bin/python3
-
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """User class that inherits from BaseModel"""
-
-    def __init__(self, *args, **kwargs):
-        """Initialize User instance"""
-        super().__init__(*args, **kwargs)
-        self.email = ""
-        self.password = ""
-        self.first_name = ""
-        self.last_name = ""
+    """User specs
+    Args:
+    BaseModel : main model
+    Attrs:
+    name (str) : name of user
+    password (str) : password of user
+    first_name (str) : first_name of user
+    last_name (str) : last_name of user
+    """
+    email = ""
+    password = ""
+    first_name = ""
+    last_name = ""
